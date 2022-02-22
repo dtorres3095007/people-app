@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:people/database/database_helper.dart';
 import 'package:people/models/person.dart';
+import 'package:people/preference/Preference.dart';
 import 'package:people/utils/header_util.dart';
 import 'package:intl/intl.dart';
 import 'package:people/utils/loading_util.dart';
@@ -58,7 +59,16 @@ class _HomeScreenState extends State<HomeScreen> {
             subTitle:
                 'Fecha Nacimiento : ${DateFormat("yyyy-MM-dd").format(DateTime.parse(people[index].date))}',
             context: context,
-            callback: () => null,
+            callback: () {
+              Preferences.person = {
+                'id': people[index].id,
+                'name': people[index].name,
+                'lastName': people[index].lastName,
+                'date': DateFormat("yyyy-MM-dd")
+                    .format(DateTime.parse(people[index].date)),
+              };
+              Navigator.pushNamed(context, 'detail');
+            },
             img: Image.asset('assets/images/person_list.png',
                 width: 40, height: 40),
           );

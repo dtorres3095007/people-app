@@ -55,6 +55,7 @@ class _HeaderSecondaryUtilState extends State<ShowItemUtil> {
               ),
               leading: CircleAvatar(
                   backgroundColor: Colors.grey[200], child: widget.img),
+              trailing: Icon(Icons.more_vert_outlined),
             ),
           ),
         ],
