@@ -7,6 +7,7 @@ import 'package:people/providers/appProvider.dart';
 import 'package:people/utils/header_secondary_util.dart';
 import 'package:people/utils/loading_util.dart';
 import 'package:people/utils/show_item_util.dart';
+import 'package:people/utils/util.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:people/ui/inputDecorations.dart';
@@ -22,6 +23,7 @@ class DetailScreen extends StatefulWidget {
 class _CreateScreenState extends State<DetailScreen> {
   List address = [];
   late Person p;
+  final appPro = appProvider();
 
   @override
   void initState() {
@@ -47,8 +49,8 @@ class _CreateScreenState extends State<DetailScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           verticalDirection: VerticalDirection.down,
           children: [
-            _btnUpdate(),
-            _btnDelete(),
+            _btnUpdate(context),
+            _btnDelete(context),
           ],
         ),
       ),
@@ -128,7 +130,7 @@ class _CreateScreenState extends State<DetailScreen> {
         });
   }
 
-  Widget _btnUpdate() {
+  Widget _btnUpdate(context) {
     return FloatingActionButton(
         mini: true,
         heroTag: 'btnUpdate',
@@ -137,12 +139,19 @@ class _CreateScreenState extends State<DetailScreen> {
         onPressed: () => null);
   }
 
-  Widget _btnDelete() {
+  Widget _btnDelete(context) {
     return FloatingActionButton(
         mini: true,
         heroTag: 'btnDelete',
         child: const Icon(Icons.delete_sharp, color: Colors.white),
         backgroundColor: Colors.orange[900],
-        onPressed: () => null);
+        onPressed: () {
+          appPro.delete(p.id ?? 0);
+          showAlert(context, 'Datos Eliminados', '', 'success',
+              btnCancelText: 'Salir',
+              btnOkText: 'Entiendo',
+              btnCancelOnPress: () => null,
+              callbackClose: () => Navigator.pop(context, false));
+        });
   }
 }

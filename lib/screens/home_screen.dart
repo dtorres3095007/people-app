@@ -50,29 +50,46 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _showData(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return ListView.builder(
-        padding: EdgeInsets.only(bottom: 50, top: size.height * 0.23),
-        itemCount: people.length,
-        itemBuilder: (BuildContext context, int index) {
-          return ShowItemUtil(
-            title: '${people[index].name} ${people[index].lastName}',
-            subTitle:
-                'Fecha Nacimiento : ${DateFormat("yyyy-MM-dd").format(DateTime.parse(people[index].date))}',
-            context: context,
-            callback: () {
-              Preferences.person = {
-                'id': people[index].id,
-                'name': people[index].name,
-                'lastName': people[index].lastName,
-                'date': DateFormat("yyyy-MM-dd")
-                    .format(DateTime.parse(people[index].date)),
-              };
-              Navigator.pushNamed(context, 'detail');
-            },
-            img: Image.asset('assets/images/person_list.png',
-                width: 40, height: 40),
-          );
-        });
+    return people.isEmpty
+        ? Container(
+            margin: EdgeInsets.only(top: size.width * 0.28),
+            color: Colors.transparent,
+            child: ListView(
+              children: [
+                Image.asset(
+                  'assets/images/person_list.png',
+                  width: 100,
+                  height: 100,
+                ),
+                const SizedBox(height: 10),
+                const Center(child: Text('Sin personas guardadas'))
+              ],
+            ),
+          )
+        : ListView.builder(
+            padding: EdgeInsets.only(bottom: 50, top: size.height * 0.23),
+            itemCount: people.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ShowItemUtil(
+                title: '${people[index].name} ${people[index].lastName}',
+                subTitle:
+                    'Fecha Nacimiento : ${DateFormat("yyyy-MM-dd").format(DateTime.parse(people[index].date))}',
+                context: context,
+                callback: () {
+                  Preferences.person = {
+                    'id': people[index].id,
+                    'name': people[index].name,
+                    'lastName': people[index].lastName,
+                    'date': DateFormat("yyyy-MM-dd")
+                        .format(DateTime.parse(people[index].date)),
+                  };
+                  Navigator.pushNamed(context, 'detail')
+                      .then((value) => setState(() => _obtain()));
+                },
+                img: Image.asset('assets/images/person_list.png',
+                    width: 40, height: 40),
+              );
+            });
   }
 
   Widget _createContainerBtn() {

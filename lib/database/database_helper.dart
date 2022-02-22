@@ -49,6 +49,15 @@ class DatabaseHelper {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
+  Future<void> delete(int id) async {
+    final Database db = await instance.database;
+    await db.delete(
+      'people',
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
 }
 
 

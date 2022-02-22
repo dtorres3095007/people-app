@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:people/providers/appProvider.dart';
 import 'package:people/utils/header_secondary_util.dart';
 import 'package:people/utils/loading_util.dart';
+import 'package:people/utils/util.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:people/ui/inputDecorations.dart';
@@ -192,55 +193,5 @@ class _FormScreenState extends State<_FormScreen> {
     );
     addForm.isLoading = false;
     setState(() {});
-  }
-
-  DialogType tipyAlerts(type) {
-    DialogType typeResp = DialogType.SUCCES;
-    switch (type) {
-      case 'info':
-        typeResp = DialogType.INFO;
-        break;
-      case 'warning':
-        typeResp = DialogType.WARNING;
-        break;
-      case 'error':
-        typeResp = DialogType.ERROR;
-        break;
-      default:
-        typeResp = DialogType.SUCCES;
-    }
-    return typeResp;
-  }
-
-  void showAlert(
-      BuildContext context, String titile, String message, String type,
-      {btnCancelOnPress,
-      btnOkOnPress,
-      btnCancelText,
-      btnOkText,
-      callbackClose}) {
-    DialogType typeDialog = tipyAlerts(type);
-    AwesomeDialog(
-      // autoHide: type == 'success' ? const Duration(seconds: 5) : null,
-      context: context,
-      dialogType: typeDialog,
-      headerAnimationLoop: false,
-      animType: AnimType.SCALE,
-      showCloseIcon: true,
-      closeIcon: const Icon(Icons.close),
-      btnCancelText: btnCancelText ?? 'No',
-      btnOkText: btnOkText ?? 'Si',
-      btnOkColor: const Color(0xff296DC8),
-      title: titile,
-      desc: message,
-      btnCancelOnPress: btnCancelOnPress == null
-          ? () {
-              Navigator.pop(context, false);
-            }
-          : () => btnCancelOnPress(),
-      onDissmissCallback:
-          callbackClose == null ? null : (type) => callbackClose(),
-      btnOkOnPress: btnOkOnPress == null ? () {} : () => btnOkOnPress(),
-    ).show();
   }
 }
