@@ -98,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onPressed: _isLoading
           ? null
           : () {
+              Preferences.action = 'add';
               Navigator.pushNamed(context, 'add')
                   .then((value) => setState(() => _obtain()));
             },

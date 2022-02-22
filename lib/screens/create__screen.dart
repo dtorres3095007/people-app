@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:people/models/person.dart';
 import 'package:people/preference/Preference.dart';
 import 'package:intl/intl.dart';
 import 'package:people/providers/appProvider.dart';
@@ -32,7 +33,9 @@ class _CreateScreenState extends State<CreateScreen> {
             _createBody(context),
             HeaderSecondaryUtil(
               context: context,
-              title: 'AGREGAR PERSONA',
+              title: Preferences.action == 'add'
+                  ? 'AGREGAR PERSONA'
+                  : 'MODIFICAR PERSONA',
             ),
             Container(
               margin: EdgeInsets.only(left: size.width * 0.8, top: 80.0),
@@ -64,7 +67,13 @@ class _FormScreen extends StatefulWidget {
 }
 
 class _FormScreenState extends State<_FormScreen> {
-  bool _error = false;
+  late Person p;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +117,18 @@ class _FormScreenState extends State<_FormScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: _btnAdd(context, addForm),
     );
+  }
+
+  void _getData() {
+    if (Preferences.action == 'update') {
+      dynamic check = Preferences.person;
+      p = Person(
+        id: check['id'],
+        name: check['name'],
+        lastName: check['lastName'],
+        date: check['date'],
+      );
+    }
   }
 
   Widget _inputName(addForm) {
@@ -174,7 +195,7 @@ class _FormScreenState extends State<_FormScreen> {
           : () async {
               FocusScope.of(context).unfocus();
               setState(() {});
-              if (!addForm.isValidForm() || _error) return;
+              if (!addForm.isValidForm()) return;
               _submit(context, addForm);
             },
     );
@@ -183,14 +204,27 @@ class _FormScreenState extends State<_FormScreen> {
   _submit(BuildContext context, addForm) async {
     addForm.isLoading = true;
     setState(() {});
-    await addForm.add();
-    addForm.formKey.currentState.reset();
-    showAlert(
-      context,
-      'Datos Guardados',
-      '¿ desea agregar otra persona?',
-      'success',
-    );
+
+    if (Preferences.action == 'add') {
+      await addForm.add();
+      addForm.formKey.currentState.reset();
+      showAlert(
+        context,
+        'Datos Guardados',
+        '¿ desea agregar otra persona?',
+        'success',
+      );
+    } else {
+      await addForm.update(p.id);
+      addForm.formKey.currentState.reset();
+      showAlert(context, 'Datos Modificados',
+          'Los datos fueron actualizados con éxito', 'success',
+          btnCancelText: 'Salir',
+          btnOkText: 'Entiendo',
+          btnCancelOnPress: () => null,
+          callbackClose: () => Navigator.pushReplacementNamed(context, 'home'));
+    }
+
     addForm.isLoading = false;
     setState(() {});
   }

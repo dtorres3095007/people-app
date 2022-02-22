@@ -30,6 +30,12 @@ class appProvider extends ChangeNotifier {
     return 'Resp';
   }
 
+  Future<dynamic> update(id) async {
+    Person p = Person(id: id, name: name, lastName: lastName, date: date);
+    await DatabaseHelper.instance.insertPerson(p);
+    return 'Resp';
+  }
+
   Future<dynamic> delete(int id) async {
     await DatabaseHelper.instance.delete(id);
     return 'Resp';

@@ -58,6 +58,16 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
+
+  Future<void> update(Person person) async {
+    final Database db = await instance.database;
+    await db.update(
+      'people',
+      person.toMap(),
+      where: "id = ?",
+      whereArgs: [person.id],
+    );
+  }
 }
 
 

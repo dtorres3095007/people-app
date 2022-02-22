@@ -10,8 +10,6 @@ import 'package:people/utils/show_item_util.dart';
 import 'package:people/utils/util.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:people/ui/inputDecorations.dart';
-import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({Key? key}) : super(key: key);
@@ -136,7 +134,10 @@ class _CreateScreenState extends State<DetailScreen> {
         heroTag: 'btnUpdate',
         child: const Icon(Icons.edit, color: Colors.white),
         backgroundColor: const Color(0xff296DC8),
-        onPressed: () => null);
+        onPressed: () {
+          Preferences.action = 'update';
+          Navigator.pushNamed(context, 'add');
+        });
   }
 
   Widget _btnDelete(context) {
@@ -147,7 +148,8 @@ class _CreateScreenState extends State<DetailScreen> {
         backgroundColor: Colors.orange[900],
         onPressed: () {
           appPro.delete(p.id ?? 0);
-          showAlert(context, 'Datos Eliminados', '', 'success',
+          showAlert(context, 'Persona Eliminada',
+              'Los datos fueron enviados y retirados con éxito', 'success',
               btnCancelText: 'Salir',
               btnOkText: 'Entiendo',
               btnCancelOnPress: () => null,
