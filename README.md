@@ -1,6 +1,6 @@
 # People
 
-This is a project with flutter, for that you need install [npm](https://docs.flutter.dev/get-started/install).
+This is a project with flutter, for that you need install [flutter](https://docs.flutter.dev/get-started/install).
 
 ## Configuration
 
