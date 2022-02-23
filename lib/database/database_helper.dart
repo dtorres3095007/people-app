@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:people/models/address.dart';
 import 'package:people/models/person.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -14,17 +15,54 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String path = join(documentsDirectory.path, 'people_database.db');
+    String path = join(documentsDirectory.path, 'app_database.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
     );
   }
 
   Future _onCreate(Database db, int version) async {
     await db.execute(
-      "CREATE TABLE people(id TEXT PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, lastName TEXT, date TEXT)",
+      "CREATE TABLE IF NOT EXISTS people(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, lastName TEXT, date TEXT)",
+    );
+    await db.execute(
+      "CREATE TABLE IF NOT EXISTS address(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT, person_id INTEGER, FOREIGN KEY(person_id) REFERENCES people(id))",
+    );
+  }
+
+  Future<List<Address>> getAddress(int person_id) async {
+    final Database db = await instance.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'address',
+      where: "person_id = ?",
+      whereArgs: [person_id],
+    );
+    return List.generate(maps.length, (i) {
+      return Address(
+        id: maps[i]['id'],
+        name: maps[i]['name'],
+        person_id: maps[i]['person_id'],
+      );
+    });
+  }
+
+  Future<void> insertAddress(Address address) async {
+    final Database db = await instance.database;
+    await db.insert(
+      'address',
+      address.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> deleteAddress(int id) async {
+    final Database db = await instance.database;
+    await db.delete(
+      'address',
+      where: "id = ?",
+      whereArgs: [id],
     );
   }
 
@@ -50,7 +88,7 @@ class DatabaseHelper {
     );
   }
 
-  Future<void> delete(int id) async {
+  Future<void> deletePerson(int id) async {
     final Database db = await instance.database;
     await db.delete(
       'people',
@@ -59,7 +97,7 @@ class DatabaseHelper {
     );
   }
 
-  Future<void> update(Person person) async {
+  Future<void> updatePerson(Person person) async {
     final Database db = await instance.database;
     await db.update(
       'people',
@@ -69,8 +107,6 @@ class DatabaseHelper {
     );
   }
 }
-
-
 
 // void main() async {
 

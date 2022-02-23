@@ -5,7 +5,7 @@ import 'package:people/database/database_helper.dart';
 import 'package:people/models/person.dart';
 
 // ignore: camel_case_types
-class appProvider extends ChangeNotifier {
+class personProvider extends ChangeNotifier {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   String name = '';
@@ -32,12 +32,12 @@ class appProvider extends ChangeNotifier {
 
   Future<dynamic> update(id) async {
     Person p = Person(id: id, name: name, lastName: lastName, date: date);
-    await DatabaseHelper.instance.insertPerson(p);
+    await DatabaseHelper.instance.updatePerson(p);
     return 'Resp';
   }
 
   Future<dynamic> delete(int id) async {
-    await DatabaseHelper.instance.delete(id);
+    await DatabaseHelper.instance.deletePerson(id);
     return 'Resp';
   }
 }
